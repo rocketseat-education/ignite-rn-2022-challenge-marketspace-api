@@ -1,0 +1,1336 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Marketspace API",
+    "description": " API desenvolvida para o desafio referente ao terceiro projeto da trilha React Native 2022 do Ignite.",
+    "contact": {
+      "email": "oi@rocketseat.com.br"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3333/"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "InternalServerError": {
+        "description": "Erro interno do servidor.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "Erro de autenticação.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Este e-mail já está em uso."
+                }
+              }
+            },
+            "examples": {
+              "JWT inválido": {
+                "value": {
+                  "status": "error",
+                  "message": "JWT token não informado."
+                }
+              },
+              "JWT falha na verificação": {
+                "value": {
+                  "status": "error",
+                  "message": "Falha ao verificar JWT Token."
+                }
+              },
+              "JWT expirado": {
+                "value": {
+                  "status": "error",
+                  "message": "token.expired"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/users/": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Criar usuário.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Rocketseat"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "desafio@rocketseat.com.br"
+                  },
+                  "tel": {
+                    "type": "string",
+                    "example": "+5511915839648"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso."
+          },
+          "400": {
+            "description": "Requisição incompleta ou incorreta.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "Invalid text fields": {
+                    "summary": "Campos de texto inválidos",
+                    "value": {
+                      "status": "error",
+                      "message": "Informe todos os campos (nome, email, telefone e senha)."
+                    }
+                  },
+                  "Invalid image field": {
+                    "summary": "Campo de imagem inválido",
+                    "value": {
+                      "status": "error",
+                      "message": "É obrigatório o envio de uma imagem."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Requisição não autorizada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "Unavailable email": {
+                    "summary": "Email já utilizado.",
+                    "value": {
+                      "status": "error",
+                      "message": "Este e-mail já está em uso."
+                    }
+                  },
+                  "Unavailable telephone number": {
+                    "summary": "Telefone já utilizado.",
+                    "value": {
+                      "status": "error",
+                      "message": "Este telefone já está em uso."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Dados do usuário logado.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "d20c858a-849c-4d0f-8082-00e93b20dd0c"
+                    },
+                    "avatar": {
+                      "type": "string",
+                      "example": "51bacae9839dfa7d09e0-rocketseat.jpg"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Rocketseat"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "desafio@rocketseat.com.br"
+                    },
+                    "tel": {
+                      "type": "string",
+                      "example": "+5511915839648"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "O usuário não foi encontrado."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/users/products": {
+      "get": {
+        "tags": [
+          "User Products"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Listagem dos produtos criados pelo usuário logado.",
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/sessions/": {
+      "post": {
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Login do usuário.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "desafio@rocketseat.com.br"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sucesso no login.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjkwNDY4NjgsImV4cCI6MTY2OTEzMzI2OCwic3ViIjoiMmI1YjcwYTAtNzA2My00ZTZiLWE3NjYtMWVhNjhmNGRjY2IxIn0._V1V4LI2mRK0wTfuA857uhU_G-TjIPsCaNBG6qsM-bA"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "d20c858a-849c-4d0f-8082-00e93b20dd0c"
+                        },
+                        "avatar": {
+                          "type": "string",
+                          "example": "51bacae9839dfa7d09e0-rocketseat.jpg"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Rocketseat"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "desafio@rocketseat.com.br"
+                        },
+                        "tel": {
+                          "type": "string",
+                          "example": "+5511915839648"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2022-11-21T16:07:30.490Z"
+                        },
+		                    "updated_at": {
+                          "type": "string",
+                          "example": "2022-11-21T16:07:30.495Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "User not found": {
+                    "summary": "Usuário não encontrado.",
+                    "value": {
+                      "status": "error",
+                      "message": "E-mail e/ou senha incorreta."
+                    }
+                  },
+                  "Invalid password": {
+                    "summary": "Senha inválida.",
+                    "value": {
+                      "status": "error",
+                      "message": "E-mail e/ou senha incorreta."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/sessions/refresh-token": {
+      "post": {
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Revalidação de token via refresh token.",
+        "responses": {
+          "200": {
+            "description": "Sucesso na revalidação do token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjkwNDY4NjgsImV4cCI6MTY2OTEzMzI2OCwic3ViIjoiMmI1YjcwYTAtNzA2My00ZTZiLWE3NjYtMWVhNjhmNGRjY2IxIn0._V1V4LI2mRK0wTfuA857uhU_G-TjIPsCaNBG6qsM-bA"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token inválido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Informe o token de autenticação."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Token não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Refresh token não encontrado para este usuário."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/products/images/": {
+      "post": {
+        "tags": [
+          "Product Images"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Cadastro de imagens do produto.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "product_id": {
+                    "type": "string",
+                    "example": "7f3227d7-be3f-47a6-81ab-ad742a546ade"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Imagens do produto cadastradas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "product_id": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "updated_at": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": "af886e76-ec8b-4b97-939c-efa8dbca67c3",
+                      "path": "4ee61d805263d662a700-rocketseat.jpg",
+                      "product_id": "7f3227d7-be3f-47a6-81ab-ad742a546ade",
+                      "created_at": "2022-11-14T19:31:48.662Z",
+                      "updated_at": "2022-11-14T19:31:48.662Z"
+                    },
+                    {
+                      "id": "651d7146-b7de-4acd-b37e-7b6b08074c0e",
+                      "path": "7f50b8475de4ae39d960-unsplash.jpg",
+                      "product_id": "7f3227d7-be3f-47a6-81ab-ad742a546ade",
+                      "created_at": "2022-11-14T19:31:48.672Z",
+                      "updated_at": "2022-11-14T19:31:48.672Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição incompleta ou incorreta.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "Invalid images fields": {
+                    "summary": "Imagens inválidas",
+                    "value": {
+                      "status": "error",
+                      "message": "É obrigatório o envio de imagens."
+                    }
+                  },
+                  "Invalid formdata": {
+                    "summary": "Formulário inválido",
+                    "value": {
+                      "status": "error",
+                      "message": "Formato de formulário de imagens inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "allOf": [
+              {
+                "content": {
+                  "application/json": {
+                    "examples": {
+                      "Usuário não é dono do produto": {
+                        "value": {
+                          "status": "error",
+                          "message": "Somente o dono do anúncio pode gerenciar as imagens do produto."
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/responses/UnauthorizedError"
+              }
+            ]
+          },
+          "404": {
+            "description": "Produto não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Produto não foi encontrado."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Product Images"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Remoção de imagens do produto.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["ba5bfc84-2038-4895-823b-e285730b3670", "af886e76-ec8b-4b97-939c-efa8dbca67c3"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Imagens do produto removidas."
+          },
+          "400": {
+            "description": "Requisição incompleta ou incorreta.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "É obrigatório o envio dos ids das imagens a serem deletadas."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "allOf": [
+              {
+                "content": {
+                  "application/json": {
+                    "examples": {
+                      "Usuário não é dono do produto": {
+                        "value": {
+                          "status": "error",
+                          "message": "Somente o dono do anúncio pode gerenciar as imagens do produto."
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/responses/UnauthorizedError"
+              }
+            ]
+          },
+          "404": {
+            "description": "Recurso não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Imagens não encontradas."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/products/": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Listagem com filtros dos produtos.",
+        "parameters": [
+          {
+            "name": "is_new",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"],
+              "example": "true"
+            },
+            "description": "Se o produto é novo ou não."
+          },
+          {
+            "name": "accept_trade",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"],
+              "example": "true"
+            },
+            "description": "Se o vendedor aceita troca ou não."
+          },
+          {
+            "name": "payment_methods",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["pix", "card", "boleto", "cash", "deposit"]
+              },
+              "example": ["pix", "card"]
+            },
+            "description": "Métodos de pagamento aceitos."
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "Cadeira"
+            },
+            "description": "Busca pelo nome do produto."
+          }
+        ],
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Cadastro do produto.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Luminária Pendente"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Essa é a melhor luminária do mundo. Você não vai se arrepender."
+                  },
+                  "is_new": {
+                    "type": "boolean",
+                    "enum": [true, false],
+                    "example": true
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 45000
+                  },
+                  "accept_trade": {
+                    "type": "boolean",
+                    "enum": [true, false],
+                    "example": true
+                  },
+                  "payment_methods": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["pix", "card", "boleto", "cash", "deposit"],
+                      "example": ["pix", "card"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produto criado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "46df47e7-d7b3-47e5-8870-7d5068105c16"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Luminária Pendente"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "Essa é a melhor luminária do mundo. Você não vai se arrepender"
+                    },
+                    "is_new": {
+                      "type": "boolean",
+                      "enum": [true, false],
+                      "example": true
+                    },
+                    "price": {
+                      "type": "number",
+                      "example": 45000
+                    },
+                    "accept_trade": {
+                      "type": "boolean",
+                      "enum": [true, false],
+                      "example": true
+                    },
+                    "user_id": {
+                      "type": "string",
+                      "example": "d20c858a-849c-4d0f-8082-00e93b20dd0c"
+                    },
+                    "is_active": {
+                      "type": "boolean",
+                      "enum": [true, false],
+                      "example": true
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "example": "2022-11-14T23:54:58.968Z"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "example": "2022-11-14T23:54:58.968Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição incompleta ou incorreta.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "Nome inválido": {
+                    "value": {
+                      "status": "error",
+                      "message": "O nome do produto é obrigatório."
+                    }
+                  },
+                  "Descrição inválida": {
+                    "value": {
+                      "status": "error",
+                      "message": "A descrição do produto é obrigatória."
+                    }
+                  },
+                  "Estado inválido": {
+                    "value": {
+                      "status": "error",
+                      "message": "A condição (novo ou usado) do produto é obrigatória."
+                    }
+                  },
+                  "Troca inválida": {
+                    "value": {
+                      "status": "error",
+                      "message": "A condição de troca é obrigatória."
+                    }
+                  },
+                  "Métodos de pagamento não encontrados": {
+                    "value": {
+                      "status": "error",
+                      "message": "Os métodos de pagamento são obrigatórios."
+                    }
+                  },
+                  "Métodos de pagamento inválidos": {
+                    "value": {
+                      "status": "error",
+                      "message": "Um ou mais métodos de pagamento são inválidos."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7f3227d7-be3f-47a6-81ab-ad742a546ade"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Produto não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Produto não encontrado."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Atualização do produto.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7f3227d7-be3f-47a6-81ab-ad742a546ade"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Luminária Pendente"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Essa é a melhor luminária do mundo. Você não vai se arrepender."
+                  },
+                  "is_new": {
+                    "type": "boolean",
+                    "enum": [true, false],
+                    "example": true
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 45000
+                  },
+                  "accept_trade": {
+                    "type": "boolean",
+                    "enum": [true, false],
+                    "example": true
+                  },
+                  "payment_methods": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["pix", "card", "boleto", "cash", "deposit"],
+                      "example": ["pix", "card"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Produto atualizado com sucesso."
+          },
+          "400": {
+            "description": "Requisição incompleta ou incorreta.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "Mínimo de 1 método de pagamento": {
+                    "value": {
+                      "status": "error",
+                      "message": "O produto precisa ter pelo menos 1 método de pagamento."
+                    }
+                  },
+                  "Métodos de pagamento inválidos": {
+                    "value": {
+                      "status": "error",
+                      "message": "Um ou mais métodos de pagamento são inválidos."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "allOf": [
+              {
+                "content": {
+                  "application/json": {
+                    "examples": {
+                      "Usuário não é dono do produto": {
+                        "value": {
+                          "status": "error",
+                          "message": "O usuário não tem permissão para atualizar o produto."
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/responses/UnauthorizedError"
+              }
+            ]
+          },
+          "404": {
+            "description": "Produto não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "O produto a ser atualizado não foi encontrado."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Atualização da visibilidade do produto.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7f3227d7-be3f-47a6-81ab-ad742a546ade"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "is_active": {
+                    "type": "boolean",
+                    "enum": [true, false],
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Visibilidade do produto atualizada com sucesso."
+          },
+          "401": {
+            "allOf": [
+              {
+                "content": {
+                  "application/json": {
+                    "examples": {
+                      "Usuário não é dono do produto": {
+                        "value": {
+                          "status": "error",
+                          "message": "O usuário não tem permissão para atualizar o produto."
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/responses/UnauthorizedError"
+              }
+            ]
+          },
+          "404": {
+            "description": "Produto não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "O produto a ser atualizado não foi encontrado."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Remoção do produto.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7f3227d7-be3f-47a6-81ab-ad742a546ade"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Produto removido com sucesso."
+          },
+          "401": {
+            "allOf": [
+              {
+                "content": {
+                  "application/json": {
+                    "examples": {
+                      "Usuário não é dono do produto": {
+                        "value": {
+                          "status": "error",
+                          "message": "O usuário não tem permissão para atualizar o produto."
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/responses/UnauthorizedError"
+              }
+            ]
+          },
+          "404": {
+            "description": "Produto não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "O produto a ser atualizado não foi encontrado."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  }
+}

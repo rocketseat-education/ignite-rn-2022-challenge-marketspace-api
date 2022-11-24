@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id         String       @id @default(uuid())
+  name       String
+  email      String       @unique
+  tel        String       @unique
+  password   String
+  avatar     String?
+  created_at DateTime     @default(now())
+  updated_at DateTime     @default(now())
+  user_token UsersTokens?
+  products   Products[]   @relation("user_products")
+}
+
+model UsersTokens {
+  id         String   @id @default(uuid())
+  expires_in Int
+  user_id    String   @unique
+  user       Users    @relation(fields: [user_id], references: [id])
+  token      String
+  created_at DateTime @default(now())
+}
+
+model Products {
+  id              String           @id @default(uuid())
+  name            String
+  description     String
+  is_new          Boolean
+  price           Int
+  accept_trade    Boolean
+  payment_methods PaymentMethods[]
+  user_id         String
+  user            Users            @relation(fields: [user_id], references: [id], name: "user_products")
+  is_active       Boolean          @default(true)
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @default(now())
+  product_images  ProductImages[]
+}
+
+model ProductImages {
+  id         String   @id @default(uuid())
+  path       String
+  product_id String
+  product    Products @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+model PaymentMethods {
+  id       String     @id @default(uuid())
+  key      String     @unique
+  name     String
+  products Products[]
+}
