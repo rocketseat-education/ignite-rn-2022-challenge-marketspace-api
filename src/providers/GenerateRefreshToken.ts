@@ -1,17 +1,31 @@
 import { prisma } from "../database";
-
-const dayjs = require("dayjs");
+import dayjs from "dayjs";
 
 export class GenerateRefreshToken {
-  async execute(userId: string, newToken: string) {
-    const expires_in = dayjs().add(1, "minute").unix();
+  async execute(userId: string) {
+    const oldRefreshToken = await prisma.refreshTokens.findFirst({
+      where: {
+        user_id: userId
+      }
+    });
 
-    await prisma.usersTokens.create({
+    if (oldRefreshToken?.id) {
+      await prisma.refreshTokens.delete({
+        where: {
+          id: oldRefreshToken.id
+        }
+      });
+    }
+
+    const expires_in = dayjs().add(15, "m").unix();
+
+    const refreshToken = await prisma.refreshTokens.create({
       data: {
-        token: newToken,
         expires_in,
         user_id: userId
       }
     })
+
+    return refreshToken;
   }
 }

@@ -75,7 +75,7 @@
               "JWT expirado": {
                 "value": {
                   "status": "error",
-                  "message": "token.expired"
+                  "message": "token.invalid"
                 }
               }
             }
@@ -365,6 +365,10 @@
                           "example": "2022-11-21T16:07:30.495Z"
                         }
                       }
+                    },
+                    "refresh-token": {
+                      "type": "string",
+                      "example": "d20c958a-849c-4d0f-8081-00e93b22dd0c"
                     }
                   }
                 }
