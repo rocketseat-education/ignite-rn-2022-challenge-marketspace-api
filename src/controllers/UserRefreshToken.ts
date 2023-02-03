@@ -8,38 +8,29 @@ import { prisma } from "../database";
 
 export class UserRefreshToken {
   async create(request: Request, response: Response) {
-    const { token } = request.body;
+    const { refresh_token } = request.body;
 
-    if (!token) {
-      throw new AppError("Informe o token de autenticação.");
+    if (!refresh_token) {
+      throw new AppError("Informe o refresh token.");
     }
 
-    const userToken = await prisma.usersTokens.findFirst({
+    const refreshToken = await prisma.refreshTokens.findFirst({
       where: {
-        token
+        id: refresh_token
       }
     })
 
-    if (!userToken) {
+    if (!refreshToken) {
       throw new AppError("Refresh token não encontrado para este usuário.", 404);
     }
 
     const generateTokenProvider = new GenerateToken();
-    const refreshToken = await generateTokenProvider.execute(userToken.user_id);
+    const token = await generateTokenProvider.execute(refreshToken.user_id);
 
-    const refreshTokenExpired = dayjs().isAfter(dayjs.unix(userToken.expires_in));
+    const refreshTokenExpired = dayjs().isAfter(dayjs.unix(refreshToken.expires_in));
 
     if (refreshTokenExpired) {
-      await prisma.usersTokens.delete({
-        where: {
-          user_id: userToken.user_id
-        }
-      })
-
-      const generateRefreshToken = new GenerateRefreshToken();
-      await generateRefreshToken.execute(userToken.user_id, refreshToken);
-
-      return response.json({ token: refreshToken });
+      throw new AppError("Refresh token expirado.", 401);
     }
 
     return response.json({ token });

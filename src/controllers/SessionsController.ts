@@ -31,25 +31,11 @@ export class SessionsController {
     const generateTokenProvider = new GenerateToken();
     const token = await generateTokenProvider.execute(user.id);
 
-    const oldUserToken = await prisma.usersTokens.findUnique({
-      where: {
-        user_id: user.id
-      }
-    })
-
-    if (oldUserToken) {
-      await prisma.usersTokens.delete({
-        where: {
-          user_id: user.id
-        }
-      })
-    }
-
     const generateRefreshToken = new GenerateRefreshToken();
-    generateRefreshToken.execute(user.id, token);
+    const newRefreshToken = await generateRefreshToken.execute(user.id);
 
     const { password: removeField, ...rest } = user;
 
-    response.status(201).json({ token, user: { ...rest } });
+    response.status(201).json({ token, user: { ...rest }, refresh_token: newRefreshToken.id });
   }
 }

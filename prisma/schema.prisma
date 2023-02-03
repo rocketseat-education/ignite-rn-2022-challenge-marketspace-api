@@ -11,24 +11,23 @@ datasource db {
 }
 
 model Users {
-  id         String       @id @default(uuid())
+  id         String         @id @default(uuid())
   name       String
-  email      String       @unique
-  tel        String       @unique
+  email      String         @unique
+  tel        String         @unique
   password   String
   avatar     String?
-  created_at DateTime     @default(now())
-  updated_at DateTime     @default(now())
-  user_token UsersTokens?
-  products   Products[]   @relation("user_products")
+  created_at DateTime       @default(now())
+  updated_at DateTime       @default(now())
+  user_token RefreshTokens?
+  products   Products[]     @relation("user_products")
 }
 
-model UsersTokens {
+model RefreshTokens {
   id         String   @id @default(uuid())
   expires_in Int
   user_id    String   @unique
   user       Users    @relation(fields: [user_id], references: [id])
-  token      String
   created_at DateTime @default(now())
 }
 
