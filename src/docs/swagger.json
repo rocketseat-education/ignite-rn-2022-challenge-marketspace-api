@@ -87,9 +87,7 @@
   "paths": {
     "/users/": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "Criar usuário.",
         "requestBody": {
           "required": true,
@@ -201,11 +199,42 @@
         }
       }
     },
+    "/images/{file-path}": {
+      "get": {
+        "tags": ["Static Files"],
+        "description": "Retornar imagens cadastradas.",
+        "parameters": [
+          {
+            "name": "file-path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1d1afeecd5621e8708e8-rocketseat.jpg"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Imagem encontrada.",
+            "content": {
+              "image/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Imagem não encontrada."
+          }
+        }
+      }
+    },
     "/users/me": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "Dados do usuário logado.",
         "security": [
           {
@@ -276,9 +305,7 @@
     },
     "/users/products": {
       "get": {
-        "tags": [
-          "User Products"
-        ],
+        "tags": ["User Products"],
         "security": [
           {
             "bearerAuth": []
@@ -297,9 +324,7 @@
     },
     "/sessions/": {
       "post": {
-        "tags": [
-          "Sessions"
-        ],
+        "tags": ["Sessions"],
         "description": "Login do usuário.",
         "requestBody": {
           "required": true,
@@ -360,7 +385,7 @@
                           "type": "string",
                           "example": "2022-11-21T16:07:30.490Z"
                         },
-		                    "updated_at": {
+                        "updated_at": {
                           "type": "string",
                           "example": "2022-11-21T16:07:30.495Z"
                         }
@@ -417,9 +442,7 @@
     },
     "/sessions/refresh-token": {
       "post": {
-        "tags": [
-          "Sessions"
-        ],
+        "tags": ["Sessions"],
         "description": "Revalidação de token via refresh token.",
         "responses": {
           "200": {
@@ -486,9 +509,7 @@
     },
     "/products/images/": {
       "post": {
-        "tags": [
-          "Product Images"
-        ],
+        "tags": ["Product Images"],
         "security": [
           {
             "bearerAuth": []
@@ -646,9 +667,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Product Images"
-        ],
+        "tags": ["Product Images"],
         "security": [
           {
             "bearerAuth": []
@@ -667,7 +686,10 @@
                     "items": {
                       "type": "string"
                     },
-                    "example": ["ba5bfc84-2038-4895-823b-e285730b3670", "af886e76-ec8b-4b97-939c-efa8dbca67c3"]
+                    "example": [
+                      "ba5bfc84-2038-4895-823b-e285730b3670",
+                      "af886e76-ec8b-4b97-939c-efa8dbca67c3"
+                    ]
                   }
                 }
               }
@@ -747,9 +769,7 @@
     },
     "/products/": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "security": [
           {
             "bearerAuth": []
@@ -810,9 +830,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "security": [
           {
             "bearerAuth": []
@@ -984,9 +1002,7 @@
     },
     "/products/{id}": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "security": [
           {
             "bearerAuth": []
@@ -1034,9 +1050,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "security": [
           {
             "bearerAuth": []
@@ -1178,9 +1192,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "security": [
           {
             "bearerAuth": []
@@ -1265,9 +1277,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "security": [
           {
             "bearerAuth": []
