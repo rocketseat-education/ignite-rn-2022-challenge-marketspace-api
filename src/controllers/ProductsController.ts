@@ -49,7 +49,7 @@ export class ProductsController {
     const is_new = request.query.is_new === undefined ? undefined : request.query.is_new === 'true'
     const accept_trade = request.query.accept_trade === undefined ? undefined : request.query.accept_trade === 'true'
     const query = typeof request.query.query === 'string' ? request.query.query : undefined
-    const payment_methods = request.query.payment_methods === undefined ? undefined : typeof request.query.payment_methods === 'string' && JSON.parse(request.query.payment_methods)
+    const payment_methods = request.query.payment_methods === undefined ? undefined : typeof request.query.payment_methods === 'string' ? new Array(request.query.payment_methods) : request.query.payment_methods as string[];
     
     const products = await prisma.products.findMany({
       where: {
