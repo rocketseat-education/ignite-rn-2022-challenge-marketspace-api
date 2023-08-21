@@ -870,9 +870,9 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": ["pix", "card", "boleto", "cash", "deposit"],
-                      "example": ["pix", "card"]
-                    }
+                      "enum": ["pix", "card", "boleto", "cash", "deposit"]
+                    },
+                    "example": ["pix", "card"]
                   }
                 }
               }
@@ -1100,9 +1100,9 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": ["pix", "card", "boleto", "cash", "deposit"],
-                      "example": ["pix", "card"]
-                    }
+                      "enum": ["pix", "card", "boleto", "cash", "deposit"]
+                    },
+                    "example": ["pix", "card"]
                   }
                 }
               }
